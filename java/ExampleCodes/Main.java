@@ -31,7 +31,7 @@ public class Main {
         main.setSecretKey("key-found-in-quicksign-portal");
         
         String batchId = main.startSigningExample();
-        main.batchExample(batchId);
+        main.getBatch(batchId);
         main.getFullySignedDocument(batchId);
     }
 
