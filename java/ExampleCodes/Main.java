@@ -71,7 +71,7 @@ public class Main {
      * Endpoint: /qapi/{secretkey}/batch/{batchid}
      * @param batchId 
      */
-    private void batchExample(String batchId) {
+    public void batchExample(String batchId) {
         try {
             String endpoint = addr + "/qapi/"+this.secretKey+"/batch/"+batchId;
             String responseString = getQuery(endpoint);
@@ -94,7 +94,7 @@ public class Main {
      * Endpoint: /qapi/{secret}/signed/{batchId}
      * @param batchId 
      */
-    private void getFullySignedDocument(String batchId) {
+    public void getFullySignedDocument(String batchId) {
         String endpoint = addr + "/qapi/"+this.secretKey+"/signed/"+batchId;
         String documentData = getQuery(endpoint);
         Gson gson = new Gson();
@@ -109,6 +109,24 @@ public class Main {
         }
     }
 
+    /**
+     * Simple dump of the signing batch. Just to see what it contains.
+     * @param signingBatch 
+     */
+    public void printBatch(SigningBatch signingBatch) {
+        System.out.println("Batch id : " + signingBatch.id);
+        
+        //There is one signing process for each user that need to sign the documents.
+        for(SigningProcess process : signingBatch.batch) {
+            System.out.println("Signer " + process.signingUser.name);
+            System.out.println("\thas signing link: " + process.redirectUrl + " has completed signature: " + process.completed);
+            if(process.completed) {
+                System.out.println("\t Got signed by: " + process.signature.name);
+                System.out.println("\t Cert issuer: " + process.signature.certissuer);
+                System.out.println("\t Birth date: " + process.signature.birthdate);
+            }
+        }
+    }
     
     private SigningBatch startSigning(List<SigningDocument> files, List<SigningUser> users, String email) {
         StartSigningBody body = new StartSigningBody();
@@ -163,21 +181,6 @@ public class Main {
         this.secretKey = key;
     }
 
-    public void printBatch(SigningBatch signingBatch) {
-        System.out.println("Batch id : " + signingBatch.id);
-        
-        //There is one signing process for each user that need to sign the documents.
-        for(SigningProcess process : signingBatch.batch) {
-            System.out.println("Signer " + process.signingUser.name);
-            System.out.println("\thas signing link: " + process.redirectUrl + " has completed signature: " + process.completed);
-            if(process.completed) {
-                System.out.println("\t Got signed by: " + process.signature.name);
-                System.out.println("\t Cert issuer: " + process.signature.certissuer);
-                System.out.println("\t Birth date: " + process.signature.birthdate);
-            }
-        }
-    }
-        
     /**
      * Returns a base64 encoded pdf with the QuickSign logo.
      * @return 
