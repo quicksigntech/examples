@@ -33,6 +33,7 @@ public class Main {
         String batchId = main.startSigningExample();
         main.getBatch(batchId);
         main.getFullySignedDocument(batchId);
+        main.deleteBatch(batchId);
     }
 
     /**
@@ -77,7 +78,7 @@ public class Main {
             String responseString = getQuery(endpoint);
             if(responseString == null || responseString.isEmpty()) {
                 System.out.println("Failed to find batch, is the secret key and the batch id correct?");
-                return;
+                return null;
             }
             
             Gson gson = new Gson();
@@ -153,7 +154,19 @@ public class Main {
         
         return null;
     }
-
+    
+    /**
+     * When you are all done you can remove all evidence / documents from the system.
+     * Endpoint: /qapi/{secret}/drop/{batchId}
+     * @param batchId The id for the batch to delete.
+     * 
+     */
+    public void deleteBatch(String batchId) {
+        String endpoint = addr + "/qapi/{secret}/drop/{batchId}";
+        getQuery(endpoint);
+    }
+    
+    
     private String postDocument(Object object, String endpoint) {
         try {
             String postUrl = addr + endpoint;// put in your url
@@ -211,6 +224,7 @@ public class Main {
         }
         return null;
     }
+
 
 
 }
