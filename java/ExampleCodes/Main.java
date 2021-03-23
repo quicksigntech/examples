@@ -71,7 +71,7 @@ public class Main {
      * Endpoint: /qapi/{secretkey}/batch/{batchid}
      * @param batchId 
      */
-    public void batchExample(String batchId) {
+    public SigningBatch getBatch(String batchId) {
         try {
             String endpoint = addr + "/qapi/"+this.secretKey+"/batch/"+batchId;
             String responseString = getQuery(endpoint);
@@ -83,9 +83,11 @@ public class Main {
             Gson gson = new Gson();
             SigningBatch batch = gson.fromJson(responseString, SigningBatch.class);
             printBatch(batch);
+            return batch;
         }catch(Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
     
     /**
