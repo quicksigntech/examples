@@ -133,6 +133,7 @@ public class Main {
      * @param files The files you would like to get signed.
      * @param users The signers who needs to sign the document.
      * @param email An email to who should recieve the signed document.
+     * Endpoint: /qapi/quicksignwithsecret/
      * @return 
      */
     public SigningBatch startSigning(List<SigningDocument> files, List<SigningUser> users, String email) {
