@@ -28,11 +28,16 @@ public class QuickSign {
     
     public static void main(String[] args) {
         QuickSign main = new QuickSign();
-        main.setSecretKey("key-found-in-quicksign-portal");
+        main.setSecretKey("0b94e639-c330-4ed4-b06d-c7a58fc9438a");
         
         String batchId = main.startSigningExample();
-        main.getBatch(batchId);
-        main.getFullySignedDocument(batchId);
+
+        SigningBatch batch = main.getBatch(batchId);
+        main.printBatch(batch);
+        
+        List<SigningDocument> docs = main.getFullySignedDocuments(batchId);
+        printDocs(docs);
+        
         main.deleteBatch(batchId);
     }
 
@@ -83,7 +88,6 @@ public class QuickSign {
             
             Gson gson = new Gson();
             SigningBatch batch = gson.fromJson(responseString, SigningBatch.class);
-            printBatch(batch);
             return batch;
         }catch(Exception e) {
             e.printStackTrace();
@@ -97,19 +101,12 @@ public class QuickSign {
      * Endpoint: /qapi/{secret}/signed/{batchId}
      * @param batchId 
      */
-    public void getFullySignedDocument(String batchId) {
+    public List<SigningDocument> getFullySignedDocuments(String batchId) {
         String endpoint = addr + "/qapi/"+this.secretKey+"/signed/"+batchId;
         String documentData = getQuery(endpoint);
         Gson gson = new Gson();
         List<SigningDocument> docs = gson.fromJson(documentData, ArrayList.class);
-        if(docs.isEmpty()) {
-            System.out.println("Signed documents are not ready yet.");
-            return;
-        }
-        
-        for(SigningDocument doc : docs) {
-            System.out.println("Signed document: " + doc.name + " base64 size: " + doc.data.length());
-        }
+        return docs;
     }
 
     /**
@@ -122,7 +119,7 @@ public class QuickSign {
         //There is one signing process for each user that need to sign the documents.
         for(SigningProcess process : signingBatch.batch) {
             System.out.println("Signer " + process.signingUser.name);
-            System.out.println("\thas signing link: " + process.redirectUrl + " has completed signature: " + process.completed);
+            System.out.println("\thas signing link: " + addr + process.redirectUrl + " has completed signature: " + process.completed);
             if(process.completed) {
                 System.out.println("\t Got signed by: " + process.signature.name);
                 System.out.println("\t Cert issuer: " + process.signature.certissuer);
@@ -162,7 +159,7 @@ public class QuickSign {
      * 
      */
     public void deleteBatch(String batchId) {
-        String endpoint = addr + "/qapi/{secret}/drop/{batchId}";
+        String endpoint = addr + "/qapi/"+secretKey+"/drop/"+ batchId;
         getQuery(endpoint);
     }
     
@@ -225,6 +222,17 @@ public class QuickSign {
         return null;
     }
 
+    private static void printDocs(List<SigningDocument> docs) {
+        if(docs.isEmpty()) {
+            System.out.println("Signed documents are not ready yet.");
+            return;
+        }
+        
+        for(SigningDocument doc : docs) {
+            System.out.println("Signed document: " + doc.name + " base64 size: " + doc.data.length());
+        }
+    }
 
+    
 
 }
