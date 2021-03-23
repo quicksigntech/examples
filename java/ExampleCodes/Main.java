@@ -43,7 +43,7 @@ public class Main {
      * 2. Who to sign it, name and email.
      * @return 
      */
-    public String startSigningExample() {
+    private String startSigningExample() {
         List<SigningDocument> documents = new ArrayList();
         SigningDocument document = new SigningDocument();
         document.data = getDocument();
@@ -128,7 +128,14 @@ public class Main {
         }
     }
     
-    private SigningBatch startSigning(List<SigningDocument> files, List<SigningUser> users, String email) {
+    /**
+     * This is where all the magic starts.
+     * @param files The files you would like to get signed.
+     * @param users The signers who needs to sign the document.
+     * @param email An email to who should recieve the signed document.
+     * @return 
+     */
+    public SigningBatch startSigning(List<SigningDocument> files, List<SigningUser> users, String email) {
         StartSigningBody body = new StartSigningBody();
         body.secretKey = this.secretKey;
         body.documents = files;
