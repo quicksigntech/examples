@@ -21,13 +21,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-public class Main {
+public class QuickSign {
 
     private String addr = "https://app.quicksign.tech";
     private String secretKey = "";
     
     public static void main(String[] args) {
-        Main main = new Main();
+        QuickSign main = new QuickSign();
         main.setSecretKey("key-found-in-quicksign-portal");
         
         String batchId = main.startSigningExample();
